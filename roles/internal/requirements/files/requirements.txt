@@ -1,0 +1,6 @@
+# Dependances pour pouvoir lancer les playbooks
+
+PyYAML == 3.12
+docker-py == 1.10.6
+docker-compose == 1.9.0
+requests < 2.12.0

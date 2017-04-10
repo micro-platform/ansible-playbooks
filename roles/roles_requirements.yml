@@ -1,0 +1,5 @@
+# Role dependencies. To install them, execute:
+# ansible-galaxy install -f -r requirements.yml -p roles/external
+
+- src: https://github.com/geerlingguy/ansible-role-git/archive/1.2.1.tar.gz
+  name: git-install

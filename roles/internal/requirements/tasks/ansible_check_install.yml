@@ -1,0 +1,5 @@
+---
+
+  - name: Check ansible version
+    assert:
+      that: ansible_version | version_compare('2.2', '>=')
