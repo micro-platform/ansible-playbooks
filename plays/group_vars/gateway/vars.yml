@@ -6,7 +6,7 @@ gateway_archive_name: 'gateway-{{ gateway_version }}.zip'
 
 gateway_archive_url: 'https://github.com/micro-platform/gateway/releases/download/{{ gateway_version }}/{{ gateway_archive_name }}'
 
-gateway_temp_destination: tmp/gateway
+gateway_temp_destination: ../tmp/gateway
 
 # Docker
 

@@ -8,11 +8,6 @@
     - role: requirements
 
   tasks:
-    - name: Delete temporary directory
-      file:
-        path: '{{ gateway_temp_destination }}'
-        state: absent
-
     - name: Create temporary directory
       file:
         path: '{{ gateway_temp_destination }}'
@@ -58,3 +53,8 @@
         state: started
         ports:
           - '{{ gateway_exposed_port }}:8080'
+
+    - name: Delete temporary directory
+      file:
+        path: '{{ gateway_temp_destination }}'
+        state: absent
