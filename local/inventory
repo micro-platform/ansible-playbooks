@@ -1,2 +1,9 @@
-[deployment]
+[gateway]
 localhost  ansible_connection=local
+
+[consul]
+localhost  ansible_connection=local
+
+[hystrix]
+localhost  ansible_connection=local
+

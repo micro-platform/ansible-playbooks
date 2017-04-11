@@ -1,8 +1,0 @@
----
-
-- hosts: deployment
-  name: Testing requirements playbook
-
-  roles:
-    - role: requirements
-      become: yes

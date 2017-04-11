@@ -1,0 +1,60 @@
+---
+
+- hosts: gateway
+  name: Deploy gateway service
+  become: yes
+
+  roles:
+    - role: requirements
+
+  tasks:
+    - name: Delete temporary directory
+      file:
+        path: '{{ gateway_temp_destination }}'
+        state: absent
+
+    - name: Create temporary directory
+      file:
+        path: '{{ gateway_temp_destination }}'
+        state: directory
+        owner: root
+        group: root
+        mode: 644
+
+    - name: Downloading gateway release
+      get_url:
+        url: '{{ gateway_archive_url }}'
+        dest: '{{ gateway_temp_destination }}/'
+
+    - name: Unarchive gateway release
+      unarchive:
+        src: '{{ gateway_temp_destination }}/{{ gateway_archive_name }}'
+        dest: '{{ gateway_temp_destination }}'
+
+    - name: Remove existing docker container
+      docker_container:
+        name: '{{ gateway_docker_container_name }}'
+        state: absent
+
+    - name: Delete existing docker image
+      docker_image:
+        name: '{{ gateway_docker_image_name }}'
+        state: absent
+        tag: '{{ gateway_version }}'
+
+    - name: Building gateway docker image
+      docker_image:
+        path: '{{ gateway_temp_destination }}'
+        name: '{{ gateway_docker_image_name }}'
+        push: no
+        tag: '{{ gateway_version }}'
+        buildargs:
+          version: '{{ gateway_version }}'
+
+    - name: Launching gateway container
+      docker_container:
+        name: '{{ gateway_docker_container_name }}'
+        image: '{{ gateway_docker_image_name }}:{{ gateway_version }}'
+        state: started
+        ports:
+          - '{{ gateway_exposed_port }}:8080'
