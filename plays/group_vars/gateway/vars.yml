@@ -12,4 +12,4 @@ gateway_temp_destination: ../tmp/gateway
 
 gateway_docker_image_name: '{{ docker_prefix }}/gateway'
 gateway_docker_container_name: gateway
-gateway_exposed_port: 9000
+gateway_docker_container_port: 9000

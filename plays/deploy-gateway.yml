@@ -52,7 +52,7 @@
         image: '{{ gateway_docker_image_name }}:{{ gateway_version }}'
         state: started
         ports:
-          - '{{ gateway_exposed_port }}:8080'
+          - '{{ gateway_docker_container_port }}:8080'
 
     - name: Delete temporary directory
       file:

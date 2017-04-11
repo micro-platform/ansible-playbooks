@@ -1,0 +1,60 @@
+---
+
+- hosts: hystrix
+  name: Deploy hystrix service
+  become: yes
+
+  roles:
+    - role: requirements
+
+  tasks:
+    - name: Create temporary directory
+      file:
+        path: '{{ hystrix_temp_destination }}'
+        state: directory
+        owner: root
+        group: root
+        mode: 644
+
+    - name: Downloading hystrix release
+      get_url:
+        url: '{{ hystrix_archive_url }}'
+        dest: '{{ hystrix_temp_destination }}/'
+
+    - name: Unarchive hystrix release
+      unarchive:
+        src: '{{ hystrix_temp_destination }}/{{ hystrix_archive_name }}'
+        dest: '{{ hystrix_temp_destination }}'
+
+    - name: Remove existing docker container
+      docker_container:
+        name: '{{ hystrix_docker_container_name }}'
+        state: absent
+
+    - name: Delete existing docker image
+      docker_image:
+        name: '{{ hystrix_docker_image_name }}'
+        state: absent
+        tag: '{{ hystrix_version }}'
+
+    - name: Building hystrix docker image
+      docker_image:
+        path: '{{ hystrix_temp_destination }}'
+        name: '{{ hystrix_docker_image_name }}'
+        push: no
+        tag: '{{ hystrix_version }}'
+        buildargs:
+          version: '{{ hystrix_version }}'
+
+    - name: Launching hystrix container
+      docker_container:
+        name: '{{ hystrix_docker_container_name }}'
+        image: '{{ hystrix_docker_image_name }}:{{ hystrix_version }}'
+        state: started
+        ports:
+          - '{{ hystrix_docker_container_port }}:8989'
+
+    - name: Delete temporary directory
+      file:
+        path: '{{ hystrix_temp_destination }}'
+        state: absent
