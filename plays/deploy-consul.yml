@@ -1,0 +1,25 @@
+---
+
+- hosts: consul
+  name: Deploy consul
+  become: yes
+
+  roles:
+    - role: requirements
+
+  tasks:
+    - name: Clone consul repository
+      git:
+        repo: '{{ consul_git_repository }}'
+        dest: '{{ consul_dest_folder }}'
+        clone: yes
+
+    - name: Build & run consul containers
+      docker_service:
+        project_src: '{{ consul_dest_folder }}'
+        state: present
+        restarted: yes
+
+
+
+
