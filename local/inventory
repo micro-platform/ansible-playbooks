@@ -4,6 +4,6 @@ localhost  ansible_connection=local
 [consul]
 localhost  ansible_connection=local
 
-[hystrix]
+[poc-hystrix]
 localhost  ansible_connection=local
 

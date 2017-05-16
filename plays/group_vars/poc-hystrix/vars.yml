@@ -1,0 +1,27 @@
+poc_hystrix_version: 0.1
+
+poc_hystrix_archive_name: 'poc-hystrix-{{ poc_hystrix_version }}.zip'
+
+poc_hystrix_release_url: 'https://github.com/micro-platform/poc-hystrix/releases/download/{{ poc_hystrix_version }}/{{ poc_hystrix_archive_name }}'
+
+poc_hystrix_temp_folder: /tmp/poc-hystrix
+
+poc_hystrix_docker_image_name: '{{ docker_prefix }}/poc-hystrix'
+poc_hystrix_docker_container_name: poc-hystrix
+
+client_docker_image_name: '{{ poc_hystrix_docker_image_name }}-client'
+client_docker_container_name: '{{ poc_hystrix_docker_container_name }}-client'
+client_docker_container_port: 11010
+client_folder: client-service
+
+server_docker_image_name: '{{ poc_hystrix_docker_image_name }}-server'
+server_docker_container_name: '{{ poc_hystrix_docker_container_name }}-server'
+server_docker_container_port: 12020
+server_folder: server-mock-latency
+
+dashboard_docker_image_name: '{{ poc_hystrix_docker_image_name }}-dashboard'
+dashboard_docker_container_name: '{{ poc_hystrix_docker_container_name }}-dashboard'
+dashboard_docker_container_port: 7979
+dashboard_folder: hystrix-dashboard
+
+release_folder: release
