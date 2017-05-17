@@ -1,0 +1,3 @@
+consul_git_repository: https://github.com/micro-platform/consul.git
+
+consul_dest_folder: /tmp/consul

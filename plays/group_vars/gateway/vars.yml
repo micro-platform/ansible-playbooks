@@ -1,0 +1,15 @@
+# Global
+
+gateway_version: 0.1
+
+gateway_archive_name: 'gateway-{{ gateway_version }}.zip'
+
+gateway_archive_url: 'https://github.com/micro-platform/gateway/releases/download/{{ gateway_version }}/{{ gateway_archive_name }}'
+
+gateway_temp_destination: ../tmp/gateway
+
+# Docker
+
+gateway_docker_image_name: '{{ docker_prefix }}/gateway'
+gateway_docker_container_name: gateway
+gateway_docker_container_port: 9000

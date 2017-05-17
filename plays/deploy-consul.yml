@@ -1,0 +1,57 @@
+---
+
+- hosts: consul
+  name: Deploy consul
+  become: yes
+
+  roles:
+    - role: requirements
+
+  tasks:
+    - name: Clone consul repository
+      git:
+        repo: '{{ consul_git_repository }}'
+        dest: '{{ consul_dest_folder }}'
+        clone: yes
+
+    - name: Build & Deploy consul containers
+      docker_service:
+        project_src: '{{ consul_dest_folder }}'
+        state: present
+        restarted: yes
+      tags:
+        - all
+
+    - name: Deploy consul server
+      docker_service:
+        project_src: '{{ consul_dest_folder }}'
+        state: present
+        restarted: yes
+        services:
+          - consul-server
+      tags:
+        - server
+
+    - name: Deploy consul agent 1
+      docker_service:
+        project_src: '{{ consul_dest_folder }}'
+        state: present
+        restarted: yes
+        services:
+          - consul-agent-1
+      tags:
+        - agent-1
+
+    - name: Deploy consul agent 2
+      docker_service:
+        project_src: '{{ consul_dest_folder }}'
+        state: present
+        restarted: yes
+        services:
+          - consul-agent-2
+      tags:
+        - agent-2
+
+
+
+

@@ -1,0 +1,75 @@
+- hosts: poc-hystrix
+  name: Deploy poc-hystrix
+  become: yes
+
+  roles:
+    - role: requirements
+
+
+  tasks:
+    - name: Create temp directory
+      file:
+        path: '{{ poc_hystrix_temp_folder }}'
+        state: directory
+        mode: 0666
+        recurse: yes
+
+    - name: Download poc-hystrix release
+      get_url:
+        url: '{{ poc_hystrix_release_url }}'
+        dest: '{{ playbook_dir }}'
+
+    - name: Unarchive poc-hystrix release
+      unarchive:
+        src: '{{ playbook_dir }}/{{ poc_hystrix_archive_name}}'
+        dest: '{{ poc_hystrix_temp_folder }}'
+
+    - name: Remove existing docker containers
+      docker_container:
+        name: '{{ item.container }}'
+        state: absent
+      with_items:
+        - { container: '{{ dashboard_docker_container_name }}' }
+        - { container: '{{ server_docker_container_name }}' }
+        - { container: '{{ client_docker_container_name }}' }
+
+    - name: Delete existing docker images
+      docker_image:
+        name: '{{ item.image }}'
+        state: absent
+        tag: '{{ poc_hystrix_version }}'
+      with_items:
+        - { image: '{{ dashboard_docker_image_name }}' }
+        - { image: '{{ server_docker_image_name }}' }
+        - { image: '{{ client_docker_image_name }}' }
+
+    - name: Building docker images
+      docker_image:
+        path: '{{ poc_hystrix_temp_folder }}/release/{{ item.folder }}'
+        name: '{{ item.image }}'
+        push: no
+        tag: '{{ poc_hystrix_version }}'
+      with_items:
+        - { image: '{{ dashboard_docker_image_name }}', folder: '{{ dashboard_folder }}' }
+        - { image: '{{ server_docker_image_name }}' , folder: '{{ server_folder }}' }
+        - { image: '{{ client_docker_image_name }}', folder: '{{ client_folder }}' }
+
+    - name: Launching containers
+      docker_container:
+        name: '{{ item.container }}'
+        image: '{{ item.image }}:{{ poc_hystrix_version }}'
+        state: started
+        ports:
+          - '{{ item.port }}:{{ item.port }}'
+      with_items:
+        - { image: '{{ dashboard_docker_image_name }}', container: '{{ dashboard_docker_container_name }}', port: '{{ dashboard_docker_container_port }}' }
+        - { image: '{{ server_docker_image_name }}', container: '{{ server_docker_container_name }}', port: '{{ server_docker_container_port }}' }
+        - { image: '{{ client_docker_image_name }}', container: '{{ client_docker_container_name }}', port: '{{ client_docker_container_port }}' }
+
+    - name: Delete temporary directory
+      file:
+        path: '{{ item.path }}'
+        state: absent
+      with_items:
+        - { path: '{{ poc_hystrix_temp_folder }}'}
+        - { path: '{{ playbook_dir}}/{{ poc_hystrix_archive_name }}'}
