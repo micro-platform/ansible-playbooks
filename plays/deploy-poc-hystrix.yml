@@ -59,8 +59,9 @@
         name: '{{ item.container }}'
         image: '{{ item.image }}:{{ poc_hystrix_version }}'
         state: started
-        ports:
-          - '{{ item.port }}:{{ item.port }}'
+        network_mode: host
+#        ports:
+#          - '{{ item.port }}:{{ item.port }}'
       with_items:
         - { image: '{{ dashboard_docker_image_name }}', container: '{{ dashboard_docker_container_name }}', port: '{{ dashboard_docker_container_port }}' }
         - { image: '{{ server_docker_image_name }}', container: '{{ server_docker_container_name }}', port: '{{ server_docker_container_port }}' }
